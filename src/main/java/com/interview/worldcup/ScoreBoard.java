@@ -15,6 +15,7 @@ public class ScoreBoard {
     }
 
     public List<Game> finishGame(final Team homeTeam, final Team awayTeam) {
+        runningGames.removeIf(g -> g.getHomeTeam().getName().equals(homeTeam.getName()) && g.getAwayTeam().getName().equals(awayTeam.getName()));
         return runningGames;
     }
 }
