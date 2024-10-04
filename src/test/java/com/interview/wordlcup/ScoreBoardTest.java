@@ -9,6 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ScoreBoardTest {
     @Test
@@ -31,6 +32,22 @@ class ScoreBoardTest {
         assertEquals(awayTeamName, game.getAwayTeam().getName());
         assertEquals(0, game.getHomeScore().getScore());
         assertEquals(0, game.getAwayScore().getScore());
+    }
+
+    @Test
+    void finishingGameShouldRemoveGameFromTheRunningGames() {
+        //given
+        ScoreBoard scoreBoard = new ScoreBoard();
+        String homeTeamName = "Argentina";
+        String awayTeamName = "Germany";
+        Team homeTeam = new Team(homeTeamName);
+        Team awayTeam = new Team(awayTeamName);
+        //when
+        scoreBoard.startGame(homeTeam, awayTeam);
+        List<Game> games = scoreBoard.finishGame(homeTeam, awayTeam);
+
+        //then
+        assertTrue(games.isEmpty());
     }
 
 }
