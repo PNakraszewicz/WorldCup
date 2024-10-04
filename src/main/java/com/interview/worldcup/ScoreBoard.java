@@ -18,4 +18,13 @@ public class ScoreBoard {
         runningGames.removeIf(g -> g.getHomeTeam().getName().equals(homeTeam.getName()) && g.getAwayTeam().getName().equals(awayTeam.getName()));
         return runningGames;
     }
+
+    public Game updateGameScore(final Team homeTeam, final Team awayTeam, final Integer homeScore, final Integer awayScore) {
+        Game gameToUpdate = runningGames.stream()
+                .filter(g -> g.getHomeTeam().getName().equals(homeTeam.getName()) && g.getAwayTeam().getName().equals(awayTeam.getName()))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Game between " + homeTeam.getName() + " and " + awayTeam.getName() + " not found."));
+
+        return gameToUpdate.updateScore(homeScore, awayScore);
+    }
 }

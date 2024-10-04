@@ -12,6 +12,11 @@ public class Game {
         this.homeScore = new Score(0);
         this.awayScore = new Score(0);
     }
+    public Game updateScore(final Integer homeScore, final Integer awayScore) {
+        this.homeScore.setScore(homeScore);
+        this.awayScore.setScore(awayScore);
+        return this;
+    }
     public Score getAwayScore() {
         return awayScore;
     }
