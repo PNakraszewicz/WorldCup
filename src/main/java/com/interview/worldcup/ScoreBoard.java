@@ -3,7 +3,6 @@ package com.interview.worldcup;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 public class ScoreBoard {
 
@@ -36,7 +35,7 @@ public class ScoreBoard {
                     final int totalScore2 = g2.getHomeScore().getScore() + g2.getAwayScore().getScore();
 
                     if (totalScore1 == totalScore2) {
-                        return g2.getCreationTime().compareTo(g1.getCreationTime());
+                        return Integer.compare(runningGames.indexOf(g2), runningGames.indexOf(g1));
                     } else {
                         return Integer.compare(totalScore2, totalScore1);
                     }
