@@ -103,9 +103,9 @@ class ScoreBoardTest {
         assertEquals(5, summary.size());
         assertEquals("Uruguay 6 - Italy 6", summary.get(0));
         assertEquals("Spain 10 - Brazil 2", summary.get(1));
-        assertEquals("Mexico 0 - Canada 5", summary.get(3));
-        assertEquals("Argentina 3 - Australia 1", summary.get(5));
-        assertEquals("Germany 2 - France 2", summary.get(2));
+        assertEquals("Mexico 0 - Canada 5", summary.get(2));
+        assertEquals("Argentina 3 - Australia 1", summary.get(3));
+        assertEquals("Germany 2 - France 2", summary.get(4));
     }
 
     private void fillScoreBoardWithTestMatches(ScoreBoard scoreBoard, String homeTeamName, String awayTeamName, Integer homeScore, Integer awayScore ) {
