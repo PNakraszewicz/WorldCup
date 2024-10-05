@@ -27,4 +27,7 @@ public class ScoreBoard {
 
         return gameToUpdate.updateScore(homeScore, awayScore);
     }
+    public List<String> getSummary() {
+        return new ArrayList<>();
+    }
 }

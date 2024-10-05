@@ -85,4 +85,34 @@ class ScoreBoardTest {
         assertEquals("Game between Scotland and Poland not found.", exception.getMessage());
     }
 
+    @Test
+    void shouldReturnSummaryOfGames() {
+        //given
+        ScoreBoard scoreBoard = new ScoreBoard();
+        fillScoreBoardWithTestMatches(scoreBoard, "Mexico", "Canada", 0, 5);
+        fillScoreBoardWithTestMatches(scoreBoard, "Spain", "Brazil", 10, 2);
+        fillScoreBoardWithTestMatches(scoreBoard, "Germany", "France", 2, 2);
+        fillScoreBoardWithTestMatches(scoreBoard, "Uruguay", "Italy", 6, 6);
+        fillScoreBoardWithTestMatches(scoreBoard, "Argentina", "Australia", 3, 1);
+
+        //when
+        List<String> summary = scoreBoard.getSummary();
+
+        //then
+        assertFalse(summary.isEmpty());
+        assertEquals(5, summary.size());
+        assertEquals("Uruguay 6 - Italy 6", summary.get(0));
+        assertEquals("Spain 10 - Brazil 2", summary.get(1));
+        assertEquals("Mexico 0 - Canada 5", summary.get(3));
+        assertEquals("Argentina 3 - Australia 1", summary.get(5));
+        assertEquals("Germany 2 - France 2", summary.get(2));
+    }
+
+    private void fillScoreBoardWithTestMatches(ScoreBoard scoreBoard, String homeTeamName, String awayTeamName, Integer homeScore, Integer awayScore ) {
+        Team homeTeam = new Team(homeTeamName);
+        Team awayTeam = new Team(awayTeamName);
+
+        scoreBoard.startGame(homeTeam, awayTeam);
+        scoreBoard.updateGameScore(homeTeam, awayTeam, homeScore, awayScore);
+    }
 }

@@ -3,8 +3,8 @@ package com.interview.worldcup;
 public class Game {
     private final Team homeTeam;
     private final Team awayTeam;
-    private Score homeScore;
-    private Score awayScore;
+    private final Score homeScore;
+    private final Score awayScore;
 
     public Game(Team homeTeam, Team awayTeam) {
         this.homeTeam = homeTeam;
