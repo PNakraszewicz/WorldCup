@@ -9,25 +9,19 @@ public class ScoreBoard {
     List<Game> runningGames = new ArrayList<>();
 
     public List<Game> startGame(final StartGameCommand command) {
-        Game game = new Game(command.homeTeam(), command.awayTeam());
+        final Game game = new Game(command.homeTeam(), command.awayTeam());
         runningGames.add(game);
         return runningGames;
     }
 
     public List<Game> finishGame(final FinishGameCommand command) {
-        runningGames.removeIf(g -> g.getHomeTeam().name().equals(command.homeTeam().name())
-                && g.getAwayTeam().name().equals(command.awayTeam().name()));
+        final Game game = findGame(command.homeTeam(), command.awayTeam());
+        runningGames.remove(game);
         return runningGames;
     }
 
     public Game updateGameScore(final UpdateGameCommand command) {
-        Game gameToUpdate = runningGames.stream()
-                .filter(g -> g.getHomeTeam().name().equals(command.homeTeam().name())
-                        && g.getAwayTeam().name().equals(command.awayTeam().name()))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Game between " + command.homeTeam().name()
-                        + " and " + command.awayTeam().name() + " not found."));
-
+        final Game gameToUpdate = findGame(command.homeTeam(), command.awayTeam());
         return gameToUpdate.updateScore(command.homeScore(), command.awayScore());
     }
 
@@ -49,5 +43,11 @@ public class ScoreBoard {
                         game.getAwayTeam().name(),
                         game.getAwayScore().getScore()))
                 .toList();
+    }
+    private Game findGame(final Team homeTeam, final Team awayTeam) {
+        return runningGames.stream()
+                .filter(g -> g.getHomeTeam().equals(homeTeam) && g.getAwayTeam().equals(awayTeam))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Game between " + homeTeam.name() + " and " + awayTeam.name() + " not found."));
     }
 }
