@@ -7,25 +7,27 @@ import java.util.NoSuchElementException;
 public class ScoreBoard {
 
     List<Game> runningGames = new ArrayList<>();
-
-    public List<Game> startGame(final Team homeTeam, final Team awayTeam) {
-        Game game = new Game(homeTeam, awayTeam);
+    public List<Game> startGame(final StartGameCommand command) {
+        Game game = new Game(command.homeTeam(), command.awayTeam());
         runningGames.add(game);
         return runningGames;
     }
 
-    public List<Game> finishGame(final Team homeTeam, final Team awayTeam) {
-        runningGames.removeIf(g -> g.getHomeTeam().getName().equals(homeTeam.getName()) && g.getAwayTeam().getName().equals(awayTeam.getName()));
+    public List<Game> finishGame(final FinishGameCommand command) {
+        runningGames.removeIf(g -> g.getHomeTeam().getName().equals(command.homeTeam().getName())
+                && g.getAwayTeam().getName().equals(command.awayTeam().getName()));
         return runningGames;
     }
 
-    public Game updateGameScore(final Team homeTeam, final Team awayTeam, final Integer homeScore, final Integer awayScore) {
+    public Game updateGameScore(final UpdateGameCommand command) {
         Game gameToUpdate = runningGames.stream()
-                .filter(g -> g.getHomeTeam().getName().equals(homeTeam.getName()) && g.getAwayTeam().getName().equals(awayTeam.getName()))
+                .filter(g -> g.getHomeTeam().getName().equals(command.homeTeam().getName())
+                        && g.getAwayTeam().getName().equals(command.awayTeam().getName()))
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Game between " + homeTeam.getName() + " and " + awayTeam.getName() + " not found."));
+                .orElseThrow(() -> new NoSuchElementException("Game between " + command.homeTeam().getName()
+                        + " and " + command.awayTeam().getName() + " not found."));
 
-        return gameToUpdate.updateScore(homeScore, awayScore);
+        return gameToUpdate.updateScore(command.homeScore(), command.awayScore());
     }
 
     public List<String> getSummary() {

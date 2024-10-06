@@ -1,8 +1,11 @@
 package com.interview.wordlcup;
 
+import com.interview.worldcup.FinishGameCommand;
 import com.interview.worldcup.Game;
 import com.interview.worldcup.ScoreBoard;
+import com.interview.worldcup.StartGameCommand;
 import com.interview.worldcup.Team;
+import com.interview.worldcup.UpdateGameCommand;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,10 +33,10 @@ class ScoreBoardTest {
     @Test
     void startingGameShouldAddGameWithResultZeroZero() {
         //given
-        final Team homeTeam = new Team(ENGLAND);
-        final Team awayTeam = new Team(GERMANY);
+        final StartGameCommand command = new StartGameCommand(new Team(ENGLAND), new Team(GERMANY));
+
         //when
-        final List<Game> games = scoreBoard.startGame(homeTeam, awayTeam);
+        final List<Game> games = scoreBoard.startGame(command);
 
         //then
         assertFalse(games.isEmpty());
@@ -49,74 +52,66 @@ class ScoreBoardTest {
     @Test
     void startingGameShouldThrowExceptionWhenTeamIsAlreadyPlayingOtherGame() {
         //given
-        final Team awayTeam = new Team(GERMANY);
-        final Team secondAwayTeam = new Team(FRANCE);
-        final Team teamPlayingTwoMatchesSameTime = new Team(ENGLAND);
+        final StartGameCommand firstCommand = new StartGameCommand(new Team(ENGLAND), new Team(GERMANY));
+        final StartGameCommand secondCommand = new StartGameCommand(new Team(ENGLAND), new Team(FRANCE));
 
         //when
-        scoreBoard.startGame(teamPlayingTwoMatchesSameTime, awayTeam);
+        scoreBoard.startGame(firstCommand);
 
         //then
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                scoreBoard.startGame(teamPlayingTwoMatchesSameTime, secondAwayTeam));
+                scoreBoard.startGame(secondCommand));
         assertEquals("Team England is already playing a different game.", exception.getMessage());
     }
 
     @Test
     void startingGameShouldThrowExceptionWhenHomeAndAwayTeamAreTheSame() {
         //given
-        final Team homeTeam = new Team(ENGLAND);
-        final Team awayTeam = new Team(ENGLAND);
+        final StartGameCommand command = new StartGameCommand(new Team(ENGLAND), new Team(ENGLAND));
 
         //when
-        scoreBoard.startGame(homeTeam, awayTeam);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                scoreBoard.startGame(command));
 
         //then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                scoreBoard.startGame(homeTeam, awayTeam));
         assertEquals("Team cannot play with itself", exception.getMessage());
     }
 
     @Test
     void startingGameShouldThrowExceptionWhenTeamNameIsEmpty() {
         //given
-        final String homeTeamName = "  ";
-        final String awayTeamName = ENGLAND;
-        final Team homeTeam = new Team(homeTeamName);
-        final Team awayTeam = new Team(awayTeamName);
+        final StartGameCommand command = new StartGameCommand(new Team("  "), new Team(ENGLAND));
 
         //when
-        scoreBoard.startGame(homeTeam, awayTeam);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                scoreBoard.startGame(command));
 
         //then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                scoreBoard.startGame(homeTeam, awayTeam));
         assertEquals("Team name cannot be empty", exception.getMessage());
     }
 
     @Test
     void startingGameShouldThrowExceptionWhenTeamNameIsNull() {
         //given
-        final Team homeTeam = new Team(null);
-        final Team awayTeam = new Team(ENGLAND);
+        final StartGameCommand command = new StartGameCommand(new Team(null), new Team(ENGLAND));
 
         //when
-        scoreBoard.startGame(homeTeam, awayTeam);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                scoreBoard.startGame(command));
 
         //then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                scoreBoard.startGame(homeTeam, awayTeam));
         assertEquals("Team name cannot be empty", exception.getMessage());
     }
 
     @Test
     void finishingGameShouldRemoveGameFromTheRunningGames() {
         //given
-        final Team homeTeam = new Team(ENGLAND);
-        final Team awayTeam = new Team(GERMANY);
+        final StartGameCommand startCommand = new StartGameCommand(new Team(ENGLAND), new Team(GERMANY));
+        final FinishGameCommand finishCommand = new FinishGameCommand(new Team(ENGLAND), new Team(GERMANY));
+
         //when
-        scoreBoard.startGame(homeTeam, awayTeam);
-        final List<Game> games = scoreBoard.finishGame(homeTeam, awayTeam);
+        scoreBoard.startGame(startCommand);
+        final List<Game> games = scoreBoard.finishGame(finishCommand);
 
         //then
         assertTrue(games.isEmpty());
@@ -125,58 +120,56 @@ class ScoreBoardTest {
     @Test
     void finishingGameShouldThrowExceptionWhenMatchIsNotFound() {
         //given
-        final Team homeTeam = new Team(ENGLAND);
-        final Team awayTeam = new Team(GERMANY);
-        final Team otherTeam = new Team("Romania");
+        final StartGameCommand startCommand = new StartGameCommand(new Team(ENGLAND), new Team(GERMANY));
+        final FinishGameCommand finishCommand = new FinishGameCommand(new Team("Romania"), new Team(GERMANY));
 
         //when & then
-        scoreBoard.startGame(homeTeam, awayTeam);
+        scoreBoard.startGame(startCommand);
         NoSuchElementException exception = assertThrows(NoSuchElementException.class, () ->
-                scoreBoard.finishGame(otherTeam, awayTeam));
-        assertEquals("Game between England and Germany not found.", exception.getMessage());
+                scoreBoard.finishGame(finishCommand));
+        assertEquals("Game between Romania and Germany not found.", exception.getMessage());
     }
 
     @Test
     void updatingScoreShouldSetNewScore() {
         //given
-        final String homeTeamName = GERMANY;
-        final String awayTeamName = ENGLAND;
-        final Team homeTeam = new Team(homeTeamName);
-        final Team awayTeam = new Team(awayTeamName);
+        final StartGameCommand startCommand = new StartGameCommand(new Team(GERMANY), new Team(ENGLAND));
+        final UpdateGameCommand updateCommand = new UpdateGameCommand(new Team(GERMANY), new Team(ENGLAND), 2, 1);
+
         //when
-        scoreBoard.startGame(homeTeam, awayTeam);
-        final Game game = scoreBoard.updateGameScore(homeTeam, awayTeam, 2, 1);
+        scoreBoard.startGame(startCommand);
+        final Game game = scoreBoard.updateGameScore(updateCommand);
 
         //then
         assertEquals(2, game.getHomeScore().getScore());
         assertEquals(1, game.getAwayScore().getScore());
-        assertEquals(homeTeamName, game.getHomeTeam().getName());
-        assertEquals(awayTeamName, game.getAwayTeam().getName());
+        assertEquals(GERMANY, game.getHomeTeam().getName());
+        assertEquals(ENGLAND, game.getAwayTeam().getName());
     }
 
     @Test
     void updatingScoreShouldThrowExceptionWhenMatchIsNotOnTheBoard() {
         //given
-        final Team homeTeam = new Team(GERMANY);
-        final Team awayTeam = new Team(ENGLAND);
+        final UpdateGameCommand updateCommand = new UpdateGameCommand(new Team(GERMANY), new Team(ENGLAND), 1, 2);
 
         //when & then
         NoSuchElementException exception = assertThrows(NoSuchElementException.class, () ->
-                scoreBoard.updateGameScore(homeTeam, awayTeam, 1, 2));
+                scoreBoard.updateGameScore(updateCommand));
         assertEquals("Game between Germany and England not found.", exception.getMessage());
     }
 
     @Test
     void updatingScoreShouldThrowExceptionWhenNegativeScoreIsProvided() {
         //given
-        final Team homeTeam = new Team(GERMANY);
-        final Team awayTeam = new Team(ENGLAND);
-        scoreBoard.startGame(homeTeam, awayTeam);
+        final StartGameCommand startCommand = new StartGameCommand(new Team(GERMANY), new Team(ENGLAND));
+        final UpdateGameCommand updateCommand = new UpdateGameCommand(new Team(GERMANY), new Team(ENGLAND), -1, 2);
 
-        //when & then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            scoreBoard.updateGameScore(homeTeam, awayTeam, -1, 2); // negative score
-        });
+        //when
+        scoreBoard.startGame(startCommand);
+
+        //then
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                scoreBoard.updateGameScore(updateCommand));
         assertEquals("Score cannot be negative", exception.getMessage());
     }
 
@@ -203,10 +196,10 @@ class ScoreBoardTest {
     }
 
     private void fillScoreBoardWithTestMatch(ScoreBoard scoreBoard, String homeTeamName, String awayTeamName, Integer homeScore, Integer awayScore) {
-        final Team homeTeam = new Team(homeTeamName);
-        final Team awayTeam = new Team(awayTeamName);
+        final StartGameCommand startCommand = new StartGameCommand(new Team(homeTeamName), new Team(awayTeamName));
+        final UpdateGameCommand updateCommand = new UpdateGameCommand(new Team(homeTeamName), new Team(awayTeamName), homeScore, awayScore);
 
-        scoreBoard.startGame(homeTeam, awayTeam);
-        scoreBoard.updateGameScore(homeTeam, awayTeam, homeScore, awayScore);
+        scoreBoard.startGame(startCommand);
+        scoreBoard.updateGameScore(updateCommand);
     }
 }
