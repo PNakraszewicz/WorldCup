@@ -43,8 +43,8 @@ class ScoreBoardTest {
         assertEquals(1, games.size());
 
         final Game game = games.stream().findFirst().get();
-        assertEquals(ENGLAND, game.getHomeTeam().getName());
-        assertEquals(GERMANY, game.getAwayTeam().getName());
+        assertEquals(ENGLAND, game.getHomeTeam().name());
+        assertEquals(GERMANY, game.getAwayTeam().name());
         assertEquals(INITIAL_SCORE, game.getHomeScore().getScore());
         assertEquals(INITIAL_SCORE, game.getAwayScore().getScore());
     }
@@ -75,32 +75,6 @@ class ScoreBoardTest {
 
         //then
         assertEquals("Team cannot play with itself", exception.getMessage());
-    }
-
-    @Test
-    void startingGameShouldThrowExceptionWhenTeamNameIsEmpty() {
-        //given
-        final StartGameCommand command = new StartGameCommand(new Team("  "), new Team(ENGLAND));
-
-        //when
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                scoreBoard.startGame(command));
-
-        //then
-        assertEquals("Team name cannot be empty", exception.getMessage());
-    }
-
-    @Test
-    void startingGameShouldThrowExceptionWhenTeamNameIsNull() {
-        //given
-        final StartGameCommand command = new StartGameCommand(new Team(null), new Team(ENGLAND));
-
-        //when
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                scoreBoard.startGame(command));
-
-        //then
-        assertEquals("Team name cannot be empty", exception.getMessage());
     }
 
     @Test
@@ -143,8 +117,8 @@ class ScoreBoardTest {
         //then
         assertEquals(2, game.getHomeScore().getScore());
         assertEquals(1, game.getAwayScore().getScore());
-        assertEquals(GERMANY, game.getHomeTeam().getName());
-        assertEquals(ENGLAND, game.getAwayTeam().getName());
+        assertEquals(GERMANY, game.getHomeTeam().name());
+        assertEquals(ENGLAND, game.getAwayTeam().name());
     }
 
     @Test

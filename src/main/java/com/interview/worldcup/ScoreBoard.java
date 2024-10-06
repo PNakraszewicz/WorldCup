@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 public class ScoreBoard {
 
     List<Game> runningGames = new ArrayList<>();
+
     public List<Game> startGame(final StartGameCommand command) {
         Game game = new Game(command.homeTeam(), command.awayTeam());
         runningGames.add(game);
@@ -14,18 +15,18 @@ public class ScoreBoard {
     }
 
     public List<Game> finishGame(final FinishGameCommand command) {
-        runningGames.removeIf(g -> g.getHomeTeam().getName().equals(command.homeTeam().getName())
-                && g.getAwayTeam().getName().equals(command.awayTeam().getName()));
+        runningGames.removeIf(g -> g.getHomeTeam().name().equals(command.homeTeam().name())
+                && g.getAwayTeam().name().equals(command.awayTeam().name()));
         return runningGames;
     }
 
     public Game updateGameScore(final UpdateGameCommand command) {
         Game gameToUpdate = runningGames.stream()
-                .filter(g -> g.getHomeTeam().getName().equals(command.homeTeam().getName())
-                        && g.getAwayTeam().getName().equals(command.awayTeam().getName()))
+                .filter(g -> g.getHomeTeam().name().equals(command.homeTeam().name())
+                        && g.getAwayTeam().name().equals(command.awayTeam().name()))
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Game between " + command.homeTeam().getName()
-                        + " and " + command.awayTeam().getName() + " not found."));
+                .orElseThrow(() -> new NoSuchElementException("Game between " + command.homeTeam().name()
+                        + " and " + command.awayTeam().name() + " not found."));
 
         return gameToUpdate.updateScore(command.homeScore(), command.awayScore());
     }
@@ -43,9 +44,9 @@ public class ScoreBoard {
                     }
                 })
                 .map(game -> String.format("%s %d - %s %d",
-                        game.getHomeTeam().getName(),
+                        game.getHomeTeam().name(),
                         game.getHomeScore().getScore(),
-                        game.getAwayTeam().getName(),
+                        game.getAwayTeam().name(),
                         game.getAwayScore().getScore()))
                 .toList();
     }

@@ -1,15 +1,10 @@
 package com.interview.worldcup;
 
-public class Team {
+public record Team(String name) {
 
-    private final String name;
-
-    public Team(String teamName) {
-        this.name = teamName;
+    public Team {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Team name cannot be empty");
+        }
     }
-
-    public String getName() {
-        return name;
-    }
-
 }
