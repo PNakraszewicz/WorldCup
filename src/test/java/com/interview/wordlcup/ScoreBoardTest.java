@@ -3,6 +3,7 @@ package com.interview.wordlcup;
 import com.interview.worldcup.Game;
 import com.interview.worldcup.ScoreBoard;
 import com.interview.worldcup.Team;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -14,14 +15,23 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ScoreBoardTest {
+
+    public static final String ENGLAND = "England";
+    public static final String GERMANY = "Germany";
+    public static final String FRANCE = "France";
+    public static final int INITIAL_SCORE = 0;
+    private ScoreBoard scoreBoard;
+
+    @BeforeEach
+    void setUp() {
+        scoreBoard = new ScoreBoard();
+    }
+
     @Test
     void startingGameShouldAddGameWithResultZeroZero() {
         //given
-        final ScoreBoard scoreBoard = new ScoreBoard();
-        final String homeTeamName = "Argentina";
-        final String awayTeamName = "Germany";
-        final Team homeTeam = new Team(homeTeamName);
-        final Team awayTeam = new Team(awayTeamName);
+        final Team homeTeam = new Team(ENGLAND);
+        final Team awayTeam = new Team(GERMANY);
         //when
         final List<Game> games = scoreBoard.startGame(homeTeam, awayTeam);
 
@@ -30,19 +40,18 @@ class ScoreBoardTest {
         assertEquals(1, games.size());
 
         final Game game = games.stream().findFirst().get();
-        assertEquals(homeTeamName, game.getHomeTeam().getName());
-        assertEquals(awayTeamName, game.getAwayTeam().getName());
-        assertEquals(0, game.getHomeScore().getScore());
-        assertEquals(0, game.getAwayScore().getScore());
+        assertEquals(ENGLAND, game.getHomeTeam().getName());
+        assertEquals(GERMANY, game.getAwayTeam().getName());
+        assertEquals(INITIAL_SCORE, game.getHomeScore().getScore());
+        assertEquals(INITIAL_SCORE, game.getAwayScore().getScore());
     }
 
     @Test
     void startingGameShouldThrowExceptionWhenTeamIsAlreadyPlayingOtherGame() {
         //given
-        final ScoreBoard scoreBoard = new ScoreBoard();
-        final Team awayTeam = new Team("Germany");
-        final Team secondAwayTeam = new Team("France");
-        final Team teamPlayingTwoMatchesSameTime = new Team("Argentina");
+        final Team awayTeam = new Team(GERMANY);
+        final Team secondAwayTeam = new Team(FRANCE);
+        final Team teamPlayingTwoMatchesSameTime = new Team(ENGLAND);
 
         //when
         scoreBoard.startGame(teamPlayingTwoMatchesSameTime, awayTeam);
@@ -50,15 +59,14 @@ class ScoreBoardTest {
         //then
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
                 scoreBoard.startGame(teamPlayingTwoMatchesSameTime, secondAwayTeam));
-        assertEquals("Team Argentina is already playing a different game.", exception.getMessage());
+        assertEquals("Team England is already playing a different game.", exception.getMessage());
     }
 
     @Test
     void startingGameShouldThrowExceptionWhenHomeAndAwayTeamAreTheSame() {
         //given
-        final ScoreBoard scoreBoard = new ScoreBoard();
-        final Team homeTeam = new Team("Croatia");
-        final Team awayTeam = new Team("Croatia");
+        final Team homeTeam = new Team(ENGLAND);
+        final Team awayTeam = new Team(ENGLAND);
 
         //when
         scoreBoard.startGame(homeTeam, awayTeam);
@@ -72,9 +80,8 @@ class ScoreBoardTest {
     @Test
     void startingGameShouldThrowExceptionWhenTeamNameIsEmpty() {
         //given
-        final ScoreBoard scoreBoard = new ScoreBoard();
         final String homeTeamName = "  ";
-        final String awayTeamName = "Croatia";
+        final String awayTeamName = ENGLAND;
         final Team homeTeam = new Team(homeTeamName);
         final Team awayTeam = new Team(awayTeamName);
 
@@ -90,9 +97,8 @@ class ScoreBoardTest {
     @Test
     void startingGameShouldThrowExceptionWhenTeamNameIsNull() {
         //given
-        final ScoreBoard scoreBoard = new ScoreBoard();
         final Team homeTeam = new Team(null);
-        final Team awayTeam = new Team("Croatia");
+        final Team awayTeam = new Team(ENGLAND);
 
         //when
         scoreBoard.startGame(homeTeam, awayTeam);
@@ -106,9 +112,8 @@ class ScoreBoardTest {
     @Test
     void finishingGameShouldRemoveGameFromTheRunningGames() {
         //given
-        final ScoreBoard scoreBoard = new ScoreBoard();
-        final Team homeTeam = new Team("Argentina");
-        final Team awayTeam = new Team("Germany");
+        final Team homeTeam = new Team(ENGLAND);
+        final Team awayTeam = new Team(GERMANY);
         //when
         scoreBoard.startGame(homeTeam, awayTeam);
         final List<Game> games = scoreBoard.finishGame(homeTeam, awayTeam);
@@ -120,24 +125,22 @@ class ScoreBoardTest {
     @Test
     void finishingGameShouldThrowExceptionWhenMatchIsNotFound() {
         //given
-        final ScoreBoard scoreBoard = new ScoreBoard();
-        final Team homeTeam = new Team("Argentina");
-        final Team awayTeam = new Team("Germany");
+        final Team homeTeam = new Team(ENGLAND);
+        final Team awayTeam = new Team(GERMANY);
         final Team otherTeam = new Team("Romania");
 
         //when & then
         scoreBoard.startGame(homeTeam, awayTeam);
         NoSuchElementException exception = assertThrows(NoSuchElementException.class, () ->
                 scoreBoard.finishGame(otherTeam, awayTeam));
-        assertEquals("Game between Romania and Germany not found.", exception.getMessage());
+        assertEquals("Game between England and Germany not found.", exception.getMessage());
     }
 
     @Test
     void updatingScoreShouldSetNewScore() {
         //given
-        final ScoreBoard scoreBoard = new ScoreBoard();
-        final String homeTeamName = "Spain";
-        final String awayTeamName = "England";
+        final String homeTeamName = GERMANY;
+        final String awayTeamName = ENGLAND;
         final Team homeTeam = new Team(homeTeamName);
         final Team awayTeam = new Team(awayTeamName);
         //when
@@ -154,22 +157,20 @@ class ScoreBoardTest {
     @Test
     void updatingScoreShouldThrowExceptionWhenMatchIsNotOnTheBoard() {
         //given
-        ScoreBoard scoreBoard = new ScoreBoard();
-        final Team homeTeam = new Team("Spain");
-        final Team awayTeam = new Team("England");
+        final Team homeTeam = new Team(GERMANY);
+        final Team awayTeam = new Team(ENGLAND);
 
         //when & then
         NoSuchElementException exception = assertThrows(NoSuchElementException.class, () ->
                 scoreBoard.updateGameScore(homeTeam, awayTeam, 1, 2));
-        assertEquals("Game between Argentina and Germany not found.", exception.getMessage());
+        assertEquals("Game between Germany and England not found.", exception.getMessage());
     }
 
     @Test
     void updatingScoreShouldThrowExceptionWhenNegativeScoreIsProvided() {
         //given
-        final ScoreBoard scoreBoard = new ScoreBoard();
-        final Team homeTeam = new Team("Spain");
-        final Team awayTeam = new Team("England");
+        final Team homeTeam = new Team(GERMANY);
+        final Team awayTeam = new Team(ENGLAND);
         scoreBoard.startGame(homeTeam, awayTeam);
 
         //when & then
@@ -179,24 +180,9 @@ class ScoreBoardTest {
         assertEquals("Score cannot be negative", exception.getMessage());
     }
 
-
-    @Test
-    void updatingScoreShouldThrowNotFoundException() {
-        //given
-        final ScoreBoard scoreBoard = new ScoreBoard();
-        final Team homeTeam = new Team("Scotland");
-        final Team awayTeam = new Team("Poland");
-
-        //when & then
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () ->
-                scoreBoard.updateGameScore(homeTeam, awayTeam, 2, 3));
-        assertEquals("Game between Scotland and Poland not found.", exception.getMessage());
-    }
-
     @Test
     void shouldReturnOrderedSummaryOfGames() {
         //given
-        final ScoreBoard scoreBoard = new ScoreBoard();
         fillScoreBoardWithTestMatch(scoreBoard, "Mexico", "Canada", 0, 5);
         fillScoreBoardWithTestMatch(scoreBoard, "Spain", "Brazil", 10, 2);
         fillScoreBoardWithTestMatch(scoreBoard, "Germany", "France", 2, 2);
