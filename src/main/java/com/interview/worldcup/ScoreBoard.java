@@ -29,8 +29,8 @@ public class ScoreBoard {
     public List<String> getSummary() {
         return runningGames.stream()
                 .sorted((g1, g2) -> {
-                    final int totalScore1 = g1.getHomeScore().getScore() + g1.getAwayScore().getScore();
-                    final int totalScore2 = g2.getHomeScore().getScore() + g2.getAwayScore().getScore();
+                    final int totalScore1 = g1.getHomeScore().getValue() + g1.getAwayScore().getValue();
+                    final int totalScore2 = g2.getHomeScore().getValue() + g2.getAwayScore().getValue();
 
                     if (totalScore1 == totalScore2) {
                         return Integer.compare(runningGames.indexOf(g2), runningGames.indexOf(g1));
@@ -40,9 +40,9 @@ public class ScoreBoard {
                 })
                 .map(game -> String.format("%s %d - %s %d",
                         game.getHomeTeam().name(),
-                        game.getHomeScore().getScore(),
+                        game.getHomeScore().getValue(),
                         game.getAwayTeam().name(),
-                        game.getAwayScore().getScore()))
+                        game.getAwayScore().getValue()))
                 .toList();
     }
 

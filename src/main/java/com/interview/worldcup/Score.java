@@ -1,18 +1,17 @@
 package com.interview.worldcup;
 
+import lombok.Getter;
+
+@Getter
 public class Score {
 
+    private Integer value;
 
-    private Integer score;
-
-    public Score(Integer score) {
-        this.score = score;
+    public Score(Integer value) {
+        this.value = value;
     }
 
-    public Integer getScore() {
-        return score;
-    }
-    public void setScore(Integer score) {
-        this.score = score;
+    public void setValue(Integer value) {
+        this.value = value;
     }
 }

@@ -45,8 +45,8 @@ class ScoreBoardTest {
         final Game game = games.stream().findFirst().get();
         assertEquals(ENGLAND, game.getHomeTeam().name());
         assertEquals(GERMANY, game.getAwayTeam().name());
-        assertEquals(INITIAL_SCORE, game.getHomeScore().getScore());
-        assertEquals(INITIAL_SCORE, game.getAwayScore().getScore());
+        assertEquals(INITIAL_SCORE, game.getHomeScore().getValue());
+        assertEquals(INITIAL_SCORE, game.getAwayScore().getValue());
     }
 
     @Test
@@ -115,8 +115,8 @@ class ScoreBoardTest {
         final Game game = scoreBoard.updateGameScore(updateCommand);
 
         //then
-        assertEquals(2, game.getHomeScore().getScore());
-        assertEquals(1, game.getAwayScore().getScore());
+        assertEquals(2, game.getHomeScore().getValue());
+        assertEquals(1, game.getAwayScore().getValue());
         assertEquals(GERMANY, game.getHomeTeam().name());
         assertEquals(ENGLAND, game.getAwayTeam().name());
     }
