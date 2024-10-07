@@ -9,6 +9,7 @@ public class ScoreBoard {
     List<Game> runningGames = new ArrayList<>();
 
     public List<Game> startGame(final StartGameCommand command) {
+        validateIfTeamsArePlaying(command.homeTeam(), command.awayTeam());
         final Game game = new Game(command.homeTeam(), command.awayTeam());
         runningGames.add(game);
         return runningGames;
@@ -44,10 +45,25 @@ public class ScoreBoard {
                         game.getAwayScore().getScore()))
                 .toList();
     }
+
     private Game findGame(final Team homeTeam, final Team awayTeam) {
         return runningGames.stream()
                 .filter(g -> g.getHomeTeam().equals(homeTeam) && g.getAwayTeam().equals(awayTeam))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Game between " + homeTeam.name() + " and " + awayTeam.name() + " not found."));
+    }
+
+    private void validateIfTeamsArePlaying(final Team homeTeam, final Team awayTeam) {
+        final boolean isHomeTeamPlaying = isTeamPlaying(homeTeam);
+        final boolean isAwayTeamPlaying = isTeamPlaying(awayTeam);
+
+        if (isHomeTeamPlaying || isAwayTeamPlaying) {
+            throw new IllegalArgumentException("One or both teams are already playing in another game");
+        }
+    }
+
+    private boolean isTeamPlaying(final Team team) {
+        return runningGames.stream()
+                .anyMatch(game -> game.getHomeTeam().equals(team) || game.getAwayTeam().equals(team));
     }
 }

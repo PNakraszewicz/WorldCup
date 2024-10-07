@@ -61,7 +61,7 @@ class ScoreBoardTest {
         //then
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
                 scoreBoard.startGame(secondCommand));
-        assertEquals("Team England is already playing a different game.", exception.getMessage());
+        assertEquals("One or both teams are already playing in another game", exception.getMessage());
     }
 
     @Test
