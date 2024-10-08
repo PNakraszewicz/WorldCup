@@ -1,4 +1,4 @@
-package com.interview.worldcup;
+package com.interview.worldcup.domain;
 
 public record Team(String name) {
 

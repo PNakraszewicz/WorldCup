@@ -1,4 +1,4 @@
-package com.interview.worldcup;
+package com.interview.worldcup.domain;
 
 import lombok.Getter;
 

@@ -1,7 +1,7 @@
 package com.interview.wordlcup;
 
-import com.interview.worldcup.Game;
-import com.interview.worldcup.Team;
+import com.interview.worldcup.domain.Game;
+import com.interview.worldcup.domain.Team;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

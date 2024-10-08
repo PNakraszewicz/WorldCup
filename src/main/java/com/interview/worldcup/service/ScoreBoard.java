@@ -1,4 +1,10 @@
-package com.interview.worldcup;
+package com.interview.worldcup.service;
+
+import com.interview.worldcup.command.FinishGameCommand;
+import com.interview.worldcup.domain.Game;
+import com.interview.worldcup.command.StartGameCommand;
+import com.interview.worldcup.domain.Team;
+import com.interview.worldcup.command.UpdateGameCommand;
 
 import java.util.ArrayList;
 import java.util.List;

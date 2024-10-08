@@ -1,17 +1,15 @@
-package com.interview.worldcup;
+package com.interview.worldcup.domain;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class Score {
 
     private Integer value;
 
     public Score(Integer value) {
-        this.value = value;
-    }
-
-    public void setValue(Integer value) {
         this.value = value;
     }
 }

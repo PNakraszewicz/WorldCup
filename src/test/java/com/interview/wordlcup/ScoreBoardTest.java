@@ -1,11 +1,11 @@
 package com.interview.wordlcup;
 
-import com.interview.worldcup.FinishGameCommand;
-import com.interview.worldcup.Game;
-import com.interview.worldcup.ScoreBoard;
-import com.interview.worldcup.StartGameCommand;
-import com.interview.worldcup.Team;
-import com.interview.worldcup.UpdateGameCommand;
+import com.interview.worldcup.command.FinishGameCommand;
+import com.interview.worldcup.domain.Game;
+import com.interview.worldcup.service.ScoreBoard;
+import com.interview.worldcup.command.StartGameCommand;
+import com.interview.worldcup.domain.Team;
+import com.interview.worldcup.command.UpdateGameCommand;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
